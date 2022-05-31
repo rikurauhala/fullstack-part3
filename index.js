@@ -41,9 +41,47 @@ app.get('/api/persons', (request, response) => {
   response.json(persons)
 })
 
+const generateId = () => {
+  return Math.floor(Math.random() * 999999)
+}
+
+const checkValidity = (request, response) => {
+  let valid = true
+  let error = ''
+
+  const noName = !request.body.name
+  const noNumber = !request.body.number
+  const exists = persons.find(person => person.name === request.body.name)
+
+  if (noName) {
+    valid = false
+    error = 'Name Missing!'
+  } else if (noNumber) {
+    valid = false
+    error = 'Number missing!' 
+  } else if (exists) {
+    valid = false
+    error = 'Person already exists!' 
+  }
+
+  if (!valid) {
+    return response.status(400).json({ 
+      error: `${error}` 
+    })
+  }
+}
+
 app.post('/api/persons', (request, response) => {
-  const person = request.body
-  person.id = Math.floor(Math.random() * 999999)
+  if (checkValidity(request, response)) {
+    return
+  }
+
+  const person = {
+    name: request.body.name,
+    number: request.body.number,
+    id: generateId()
+  }
+
   persons = persons.concat(person)
   response.json(person)
 })
