@@ -6,6 +6,9 @@ const morgan = require('morgan')
 morgan.token('json', (request, response) => JSON.stringify(request.body))
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :json'))
 
+const cors = require('cors')
+app.use(cors())
+
 let persons = [
   { 
     "name": "Arto Hellas", 
