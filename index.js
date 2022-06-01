@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
 app.use(express.json())
+app.use(express.static('build'))
 
 const morgan = require('morgan')
 morgan.token('json', (request, response) => JSON.stringify(request.body))
@@ -31,10 +32,6 @@ let persons = [
     "id": 4
   }
 ]
-
-app.get('/', (request, response) => {
-  response.redirect('/api/persons')
-})
 
 app.get('/info', (request, response) => {
   date = new Date()
