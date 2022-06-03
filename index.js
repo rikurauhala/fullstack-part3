@@ -16,10 +16,12 @@ const Person = require('./models/person')
 
 app.get('/info', (request, response) => {
   date = new Date()
-  response.send(
-    `<p>Phonebook has info for ${persons.length} people</p>
-     ${date}`
-  )
+  Person.find({}).then(persons => {
+    response.send(
+      `<p>Phonebook has info for ${persons.length} people</p>
+       <p>${date}</p>`
+    )
+  })
 })
 
 app.get('/api/persons', (request, response) => {
