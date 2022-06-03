@@ -55,10 +55,10 @@ app.post('/api/persons', (request, response) => {
     return
   }
 
-  const person = {
+  const person = new Person({
     name: request.body.name,
     number: request.body.number
-  }
+  })
 
   person.save().then(savedPerson => {
     response.json(savedPerson)
