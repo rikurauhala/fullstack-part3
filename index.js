@@ -6,7 +6,7 @@ app.use(express.json())
 app.use(express.static('build'))
 
 const morgan = require('morgan')
-morgan.token('json', (request, response) => JSON.stringify(request.body))
+morgan.token('json', request => JSON.stringify(request.body))
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :json'))
 
 const cors = require('cors')
@@ -15,7 +15,7 @@ app.use(cors())
 const Person = require('./models/person')
 
 app.get('/info', (request, response) => {
-  date = new Date()
+  const date = new Date()
   Person.find({}).then(persons => {
     response.send(
       `<p>Phonebook has info for ${persons.length} people</p>
@@ -63,7 +63,7 @@ app.put('/api/persons/:id', (request, response, next) => {
     number: body.number
   }
   const id = request.params.id
-  Person.findByIdAndUpdate(id, person, {new: true, runValidators: true, context: 'query'})
+  Person.findByIdAndUpdate(id, person, { new: true, runValidators: true, context: 'query' })
     .then(updatedPerson => {
       response.json(updatedPerson)
     })
@@ -72,23 +72,23 @@ app.put('/api/persons/:id', (request, response, next) => {
 
 app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndRemove(request.params.id)
-    .then(result => {
+    .then(() => {
       response.status(204).end()
     })
     .catch(error => next(error))
 })
 
 const unknownEndpoint = (request, response) => {
-  response.status(404).send({error: 'Unknown endpoint'})
+  response.status(404).send({ error: 'Unknown endpoint' })
 }
 app.use(unknownEndpoint)
 
 const errorHandler = (error, request, response, next) => {
   console.error(error.message)
   if (error.name === 'CastError') {
-    return response.status(400).send({error: 'Malformatted id'})
+    return response.status(400).send({ error: 'Malformatted id' })
   } else if (error.name === 'ValidationError') {
-    return response.status(400).json({error: error.message})
+    return response.status(400).json({ error: error.message })
   }
   next(error)
 }
